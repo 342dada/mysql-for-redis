@@ -30,7 +30,6 @@ public class ElasticJobConfig implements ApplicationContextAware {
     @Autowired
     private ZookeeperRegistryCenter registryCenter;
 
-//    @PostConstruct
     public void initJobs() {
 
         // 定义 SimpleJob 配置
