@@ -29,7 +29,6 @@ public class Process   {
 //    public void Process(ProcessParam processParam){
     @GetMapping(path = "/a")
     public void Process(){
-//        MyBatisConfig.validateTypeHandlerRegistration();
 //        String    sql="select start_date startDate,id ,end_date endData from task";
         String    sql="select * from user_open";
         ProcessParam param = new ProcessParam();
