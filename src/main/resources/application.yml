@@ -8,6 +8,9 @@ spring:
     password: 123456
 logging:
   config: classpath:logback.xml
+elastic:
+  job:
+    param: '[{"cron":"0/5 * * * * ?","jobName":"test1","jobParam":"dd","key":"{aa}_bb","sql":"select * from task"}]'
 #  level:
 #    com.baomidou.mybatisplus: debug
 #    root: debug

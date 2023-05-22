@@ -24,4 +24,12 @@ public class ProcessParam {
      * 写入redis 数据格式
      */
     private String dataFormat;
+
+    private String zsetScore;
+
+    private String cron;
+
+    private String jobName;
+
+    private String jobParam;
 }
