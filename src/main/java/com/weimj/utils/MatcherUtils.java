@@ -12,6 +12,13 @@ import java.util.regex.Pattern;
  */
 public class MatcherUtils {
     private static final String PATTERN_STR="\\{([^{}]+)\\}";
+
+    /**
+     * 根据模板提取redis key
+     * @param template
+     * @param values
+     * @return
+     */
     public static String  extractVariables(String template, Map<String,String> values) {
         Pattern pattern = Pattern.compile(PATTERN_STR);
         Matcher matcher = pattern.matcher(template);

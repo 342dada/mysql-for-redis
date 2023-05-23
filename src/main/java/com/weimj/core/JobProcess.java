@@ -4,14 +4,8 @@ import com.alibaba.fastjson.JSON;
 import com.weimj.entity.ProcessParam;
 import com.weimj.mapper.TaskMapper;
 import com.weimj.utils.MatcherUtils;
-import org.apache.ibatis.session.SqlSessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.ApplicationArguments;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Pipeline;
@@ -22,25 +16,18 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Component
-@RestController
-public class Process   {
+public class JobProcess   {
     @Autowired
     private TaskMapper taskMapper;
     @Autowired
     private JedisPool jedisPool;
-    @Autowired
-    private SqlSessionFactory sqlSessionFactory;
-//    public void Process(ProcessParam processParam){
-    @GetMapping(path = "/a")
-    public void Process(){
+    public void Process(ProcessParam param){
 //        String    sql="select start_date startDate,id ,end_date endData from task";
-        String    sql="select * from user_open";
-        ProcessParam param = new ProcessParam();
-        Long count = taskMapper.count(sql);
-        List<Map<String, String>> select = taskMapper.select(sql);
+        String    sql=param.getSql();
+        List<Map<String, String>> select = getData(param);
 //        ValueOperations valueOperations = redisTemplate.opsForValue();
 //        valueOperations.set("aaa","bbb");
-        String template = "{id}_{end_date}";
+        String template = param.getKey();
 
         Map<String, Map<String, String>> collect = select.stream().collect(Collectors.toMap(map -> MatcherUtils.extractVariables(template, map), map -> map,(existing, replacement) -> existing));
 
@@ -50,6 +37,13 @@ public class Process   {
         //        String test = select.get(0).get("test");
     }
 
+    //后续可提供spi织入点
+    private List<Map<String, String>> getData(ProcessParam param){
+        String sql = param.getSql();
+        Long count = taskMapper.count(sql);
+        return taskMapper.select(param.getSql());
+    }
+
     public void  writeToReidsString(Map<String, Map<String, String>> data,ProcessParam processParam){
         Jedis jedisPoolResource = jedisPool.getResource();
         Pipeline pipelined = jedisPoolResource.pipelined();
@@ -57,6 +51,8 @@ public class Process   {
             pipelined.set(k,JSON.toJSONString(v));
         });
         pipelined.sync();
+
+
     }
 
     public void  writeToReidsList(Map<String, Map<String, String>> data ,ProcessParam processParam){
@@ -92,16 +88,5 @@ public class Process   {
             pipelined.zadd(processParam.getKey(),Double.valueOf(Optional.ofNullable(processParam.getZsetScore()).orElse(v.get("id"))),JSON.toJSONString(v));
         });
         pipelined.sync();
-    }
-
-
-
-    private void a (){
-        ProcessParam param = new ProcessParam();
-    }
-
-//    @Override
-    public void run(ApplicationArguments args) throws Exception {
-        Process();
     }
 }

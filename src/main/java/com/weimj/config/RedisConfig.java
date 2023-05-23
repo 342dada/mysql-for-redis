@@ -23,7 +23,6 @@ public class RedisConfig {
 //            return redisTemplate;
 //        }
         @Bean
-
         JedisPool JedisPoolFactory(){
             JedisPool localhost = new JedisPool("localhost", 6379);
             return  localhost;

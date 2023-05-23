@@ -1,11 +1,11 @@
 package com.weimj.handler.mybatis;
-
+import java.sql.*;
+import org.apache.ibatis.type.*;
 /**
  * @Author:Weimj
  * @Date: 2023/5/21  2:25
  */
-import java.sql.*;
-import org.apache.ibatis.type.*;
+
 
 @MappedTypes(String.class)
 @MappedJdbcTypes(JdbcType.BIGINT)
