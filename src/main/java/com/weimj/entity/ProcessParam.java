@@ -13,9 +13,13 @@ public class ProcessParam {
      */
     private String sql;
     /**
-     * 写入redis key
+     * 写入redis key 模板
      */
-    private String key;
+    private String keyTemplate;
+    /**
+     * 写入 field 模板
+     */
+    private String fieldTemplate;
     /**
      * 写入redis value
      */
@@ -25,7 +29,7 @@ public class ProcessParam {
      */
     private String dataFormat;
 
-    private String zsetScore;
+    private String zsetScoreColumn;
 
     private String cron;
 
