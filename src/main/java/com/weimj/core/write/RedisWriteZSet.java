@@ -29,7 +29,7 @@ public class RedisWriteZSet extends AbstractRedisWrite {
      */
 
     @Override
-    public List<Object> write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data){
+    public void write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data){
         String keyTemplate = param.getKeyTemplate();
         String column = param.getZsetScoreColumn();
         for (int i = 0; i < data.size(); i++) {
@@ -43,7 +43,5 @@ public class RedisWriteZSet extends AbstractRedisWrite {
             //id取不到,按结果集排序
             redisConnection.lSet(keyTemplate.getBytes(), Objects.isNull(score)?i:score,convertDataProtocol(map));
         }
-
-        return null;
     }
 }

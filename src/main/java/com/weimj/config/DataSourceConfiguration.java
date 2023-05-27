@@ -1,12 +1,14 @@
 package com.weimj.config;
+import com.baomidou.mybatisplus.core.MybatisConfiguration;
 import com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean;
+import com.weimj.handler.mybatis.LocalObjectTypeHandler;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.apache.ibatis.session.SqlSessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 
 import javax.sql.DataSource;
 
@@ -25,6 +27,9 @@ public class DataSourceConfiguration {
     @Value("${spring.datasource.password}")
     private String password;
 
+    @Autowired
+    private LocalObjectTypeHandler localObjectTypeHandler;
+
     public DataSourceConfiguration() {
     }
 
@@ -42,9 +47,11 @@ public class DataSourceConfiguration {
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
         MybatisSqlSessionFactoryBean factoryBean = new MybatisSqlSessionFactoryBean();
         factoryBean.setDataSource(dataSource);
-        PathMatchingResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-        factoryBean.setMapperLocations(resolver.getResources("classpath*:/mapper/*.xml"));
-        factoryBean.setTypeAliasesPackage("com.weimj.entity");
+        MybatisConfiguration configuration = new MybatisConfiguration();
+        configuration.setMapUnderscoreToCamelCase(true); // 开启驼峰命名规则
+        // 注册 mybatis自定义type处理
+        configuration.getTypeHandlerRegistry().register( localObjectTypeHandler);
+        factoryBean.setConfiguration(configuration);
         return factoryBean.getObject();
     }
 }

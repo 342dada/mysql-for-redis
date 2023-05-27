@@ -1,36 +1,37 @@
 package com.weimj.core;
 
+import com.weimj.constant.WriteRedisConstant;
 import com.weimj.entity.ProcessParam;
-import com.weimj.mapper.TaskMapper;
+import com.weimj.server.DataService;
 import com.weimj.tag.Type;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.Resource;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
 @Component
 public class JobProcess   {
-    @Autowired
-    private TaskMapper taskMapper;
+    @Resource(name="mysqlServiceImpl")
+    private DataService mysqlServiceImpl;
+
     @Autowired
     private  List<RedisWrite> redisWriteList;
 
     public void Process(ProcessParam param){
         RedisWrite redisWrite = searchRedisWrite(param.getDataFormat());
-        List<Map<String, String>> data = getData(param);
+        List<Map<String, String>> data = mysqlServiceImpl.getData(param);
         redisWrite.writeData(param,data);
     }
 
-    //后续可提供spi织入点
-    private List<Map<String, String>> getData(ProcessParam param){
-        String sql = param.getSql();
-        Long count = taskMapper.count(sql);
-        return taskMapper.select(param.getSql());
-    }
-
+    /**
+     * 根据type寻找对应的写入redis执行器，如果找不到，默认使用string
+     * @param typeName
+     * @return
+     */
     private RedisWrite searchRedisWrite(String typeName) {
         for (RedisWrite redisWrite : redisWriteList) {
             Type typeAnnotation = AnnotationUtils.findAnnotation(redisWrite.getClass(), Type.class);
@@ -41,7 +42,7 @@ public class JobProcess   {
                 }
             }
         }
-        return searchRedisWrite("STRING");
+        return searchRedisWrite(WriteRedisConstant.STRING);
     }
 
 

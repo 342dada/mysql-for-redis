@@ -33,7 +33,7 @@ abstract class AbstractRedisWrite implements RedisWrite {
         connection.closePipeline();
         connection.close();
     }
-    public abstract List<Object> write(ProcessParam param,RedisConnection connection,List<Map<String, String>> data);
+    public abstract void write(ProcessParam param,RedisConnection connection,List<Map<String, String>> data);
 
     /**
      * 将数据转换成协议写入 后续支持多种类型（如pb,gson等）

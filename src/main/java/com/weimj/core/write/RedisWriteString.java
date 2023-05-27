@@ -23,12 +23,11 @@ import java.util.Map;
 public class RedisWriteString extends AbstractRedisWrite {
 
     @Override
-    public List<Object> write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data) {
+    public void write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data) {
         String keyTemplate = param.getKeyTemplate();
         data.forEach(map->{
             String key = MatcherUtils.extractVariables(keyTemplate, map);
             redisConnection.set((StringUtils.isEmpty(key)?map.get("id"):key).getBytes(),convertDataProtocol(map));
         });
-        return null;
     }
 }

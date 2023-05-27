@@ -20,9 +20,8 @@ import java.util.Map;
 public class RedisWriteList extends AbstractRedisWrite {
 
     @Override
-    public List<Object> write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data){
+    public void write(ProcessParam param, RedisConnection redisConnection, List<Map<String, String>> data){
         String keyTemplate = param.getKeyTemplate();
         data.forEach(map->redisConnection.lPush(keyTemplate.getBytes(),convertDataProtocol(map)));
-        return null;
     }
 }

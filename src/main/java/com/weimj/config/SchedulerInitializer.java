@@ -5,7 +5,6 @@ import com.dangdang.ddframe.job.lite.api.JobScheduler;
 import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
